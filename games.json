@@ -21,6 +21,23 @@
       "artHeight": 800,
       "artAlt": "An orange 4x4 parked on a gravel track in Party Mode, with hills and trees ahead.",
       "notes": "Opens on this TV. On that screen, choose Party Mode, then scan the QR code it shows with your phone to drive. Zavbox steps aside once the game starts."
+    },
+    {
+      "id": "air-tennis",
+      "title": "Air Tennis",
+      "description": "Neon indoor tennis. Swing your phone like a racket, or stand it on the table and swing your hand. Rally vs CPU, Ball Machine, Target Practice and Rally Challenge.",
+      "play": "https://8kbtcrn6ws-star.github.io/air-tennis/",
+      "origin": "live",
+      "controller": "phone-motion",
+      "cover": "art/air-tennis-cover.webp",
+      "coverWidth": 864,
+      "coverHeight": 1152,
+      "coverAlt": "Key art of a sleek mannequin-style player smashing a glowing neon ball in a dark indoor arena with cyan court lines.",
+      "art": "art/air-tennis.webp",
+      "artWidth": 1280,
+      "artHeight": 720,
+      "artAlt": "Air Tennis in play: a player on a deep-blue court with glowing cyan lines, hitting a neon ball.",
+      "notes": "Opens on this TV. Scan the QR code Air Tennis shows with your phone, pick Swing your phone or Phone on table, and follow the quick setup."
     }
   ]
 }

@@ -586,7 +586,8 @@ function launchGame(id) {
   const game = gameById(id);
   if (!game || !game.play) return;
   const isParty = id === "party-mode" || game.play.startsWith("https://8kbtcrn6ws-star.github.io/party-mode/");
-  const url = isParty ? withGraphicsParams(game.play) : game.play;
+  const isAirTennis = id === "air-tennis" || game.play.startsWith("https://8kbtcrn6ws-star.github.io/air-tennis/");
+  const url = isParty || isAirTennis ? withGraphicsParams(game.play) : game.play;
   host.broadcast({
     t: "launch",
     game: id,
