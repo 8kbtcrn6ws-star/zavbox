@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050a1d">
+  <meta name="description" content="Zavbox phone controller. D-pad, A, B and Home drive the TV menu.">
+  <title>Zavbox controller</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="controller.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "peerjs": "https://cdn.jsdelivr.net/npm/peerjs@1.5.5/+esm"
+    }
+  }
+  </script>
+  <script src="controller.js" type="module"></script>
+</head>
+<body class="phone">
+  <header>
+    <p class="wordmark"><svg class="mark" viewBox="0 0 84 64" aria-hidden="true" focusable="false"><defs><linearGradient id="mark-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7fe0ff"/><stop offset="0.55" stop-color="#2f8bff"/><stop offset="1" stop-color="#1450f0"/></linearGradient></defs><path d="M17 4h61a3 3 0 0 1 2.6 4.5l-4 7A6 6 0 0 1 71.4 18.5H41L19 46h45a3 3 0 0 1 2.6 4.5l-4.4 7.6A6 6 0 0 1 57 61H5a3 3 0 0 1-2.4-4.8L36 18.5H9.8a3 3 0 0 1-2.6-4.5l4.6-7A6 6 0 0 1 17 4z" fill="url(#mark-g)"/><path d="M44.5 25.5L60 25.5L50.5 38H35z" fill="#bff1ff" opacity="0.9"/></svg>Zavbox</p>
+    <p class="room" id="room-label">Room</p>
+  </header>
+  <p class="status" id="status" role="status">Ready to join the TV.</p>
+
+  <form id="join-form" class="join">
+    <label for="code">Room code on the TV</label>
+    <input id="code" name="code" type="text" inputmode="text" autocomplete="off" maxlength="6" spellcheck="false" autocapitalize="characters">
+    <button type="submit" id="btn-join">Join the TV</button>
+    <p class="err" id="err" role="status"></p>
+  </form>
+
+  <div id="pad" class="pad" hidden>
+    <div class="dpad" role="group" aria-label="D-pad">
+      <button type="button" class="d up" data-key="up" aria-label="Up"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.5 15 12 8.5l6.5 6.5"/></svg></button>
+      <button type="button" class="d left" data-key="left" aria-label="Left"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5.5 8.5 12l6.5 6.5"/></svg></button>
+      <button type="button" class="d right" data-key="right" aria-label="Right"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5.5 15.5 12 9 18.5"/></svg></button>
+      <button type="button" class="d down" data-key="down" aria-label="Down"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.5 9 12 15.5 18.5 9"/></svg></button>
+      <button type="button" class="d-hub" data-key="a" aria-label="Select"></button>
+    </div>
+    <div class="ab" role="group" aria-label="Action buttons">
+      <button type="button" class="face a" data-key="a" aria-label="A, select">A</button>
+      <button type="button" class="face b" data-key="b" aria-label="B, back">B</button>
+      <button type="button" class="face home" data-key="home" id="btn-home" aria-label="Home"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 11.2 12 4l8.5 7.2V20a1 1 0 0 1-1 1h-5v-5.6h-5V21h-5a1 1 0 0 1-1-1z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+
+  <div id="numpad" class="numpad" hidden>
+    <p class="numpad-label">Enter the PIN shown on the TV</p>
+    <div class="num-grid" role="group" aria-label="Number pad">
+      <button type="button" data-key="1">1</button>
+      <button type="button" data-key="2">2</button>
+      <button type="button" data-key="3">3</button>
+      <button type="button" data-key="4">4</button>
+      <button type="button" data-key="5">5</button>
+      <button type="button" data-key="6">6</button>
+      <button type="button" data-key="7">7</button>
+      <button type="button" data-key="8">8</button>
+      <button type="button" data-key="9">9</button>
+      <button type="button" data-key="back" aria-label="Delete">DEL</button>
+      <button type="button" data-key="0">0</button>
+      <button type="button" data-key="ok" aria-label="Confirm">OK</button>
+    </div>
+  </div>
+
+  <div id="home-wrap" hidden></div>
+
+  <p class="hint" id="hint">A selects, B goes back, Home returns to Games.</p>
+</body>
+</html>

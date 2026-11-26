@@ -1,0 +1,282 @@
+/* Zavbox phone controller. Measured from the phone in design/mockup-zav.png (see DESIGN.md). */
+@font-face { font-family: Urbanist; src: url("fonts/urbanist-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: Urbanist; src: url("fonts/urbanist-600.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: Urbanist; src: url("fonts/urbanist-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+
+:root {
+  --bg: #0c1336;
+  --bg-deep: #070b22;
+  --ring-fill: #0f1a44;
+  --ring-edge: #2c316b;
+  --face-fill: #181a37;
+  --face-edge: #3a3a66;
+  --a-fill: #0a2596;
+  --text: #ffffff;
+  --text-2: #d3dbf2;
+  --muted: #aab6d9;
+  --neon-core: #40f1fe;
+  --neon: #1f7dff;
+  --neon-hi: #2b84ff;
+  --ok: #22d36b;
+  --warn: #ffb547;
+  --danger: #ff8d7a;
+  --font-ui: Urbanist, "Segoe UI", system-ui, sans-serif;
+
+  --ring: min(17rem, 70vw);      /* 272px on a 390 phone, mock-up 69% of width */
+  --hub: min(5.75rem, 23.5vw);   /* 92px */
+  --arrow: 4.75rem;              /* 76px tap target */
+  --face: min(5.75rem, 24vw);    /* 92px, mock-up 98px */
+  --face-drop: 3.9rem;           /* B and Home sit 62px lower than A */
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg-deep);
+  color: var(--text);
+  font-family: var(--font-ui);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body.phone {
+  min-height: 100dvh;
+  padding: calc(1.25rem + env(safe-area-inset-top)) 1.25rem calc(1rem + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  background:
+    radial-gradient(ellipse 90% 45% at 50% 38%, rgba(31, 70, 200, 0.28), transparent 70%),
+    linear-gradient(180deg, var(--bg) 0%, #0b1030 60%, var(--bg-deep) 100%);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+a, button, label { cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: 0.6; }
+:focus-visible { outline: 3px solid var(--neon-core); outline-offset: 3px; }
+
+header { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; width: 100%; }
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.wordmark .mark { width: 2.6rem; height: auto; filter: drop-shadow(0 0 0.35rem rgba(47, 139, 255, 0.6)); }
+.room { margin: 0; font-size: 0.9rem; font-weight: 600; letter-spacing: 0.18em; color: var(--muted); text-transform: uppercase; }
+
+.status {
+  margin: 0;
+  max-width: 21rem;
+  min-height: 2.6em;
+  text-align: center;
+  font-size: 0.95rem;
+  line-height: 1.3;
+  color: var(--text-2);
+}
+.status::before {
+  content: "";
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+  margin-right: 0.45rem;
+  border-radius: 50%;
+  vertical-align: 0.05em;
+  background: var(--warn);
+  box-shadow: 0 0 0.45rem var(--warn);
+}
+.status[data-state="ready"]::before { background: var(--ok); box-shadow: 0 0 0.45rem var(--ok); }
+.status[data-state="error"] { color: var(--danger); }
+.status[data-state="error"]::before { background: var(--danger); box-shadow: 0 0 0.45rem var(--danger); }
+
+/* join form */
+.join { width: 100%; max-width: 22rem; margin-top: 1.5rem; }
+.join label { display: block; font-weight: 600; color: var(--text-2); margin-bottom: 0.4rem; }
+.join input {
+  width: 100%;
+  min-height: 3.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--ring-edge);
+  border-radius: 1rem;
+  background: var(--ring-fill);
+  color: var(--text);
+  font: inherit;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.join input:focus { outline: none; border-color: var(--neon-core); box-shadow: 0 0 0 1px var(--neon-core), 0 0 0.9rem rgba(31, 125, 255, 0.6); }
+.join button {
+  width: 100%;
+  min-height: 3.25rem;
+  margin-top: 0.85rem;
+  border-radius: 999px;
+  border: 1px solid #6fb2ff;
+  background: linear-gradient(180deg, #1668ff, #0b5ff5);
+  color: #fff;
+  font: inherit;
+  font-size: 1.1rem;
+  font-weight: 700;
+  box-shadow: 0 0 1.1rem rgba(31, 125, 255, 0.55);
+}
+.err { min-height: 1.3em; color: var(--danger); margin: 0.6rem 0 0; text-align: center; }
+
+/* pad */
+.pad {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.6rem;
+}
+
+.dpad {
+  position: relative;
+  width: var(--ring);
+  height: var(--ring);
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 40%, #13205a 0%, var(--ring-fill) 55%, #0c1538 100%);
+  border: 1.5px solid var(--ring-edge);
+  box-shadow: inset 0 0 2rem rgba(0, 0, 0, 0.35), 0 0.6rem 2rem rgba(0, 0, 0, 0.35);
+}
+
+.d {
+  position: absolute;
+  width: var(--arrow);
+  height: var(--arrow);
+  min-width: 44px;
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text);
+  touch-action: none;
+}
+.d svg { width: 2.1rem; height: 2.1rem; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.d.up    { left: calc(50% - var(--arrow) / 2); top: 0.35rem; }
+.d.down  { left: calc(50% - var(--arrow) / 2); bottom: 0.35rem; }
+.d.left  { top: calc(50% - var(--arrow) / 2); left: 0.35rem; }
+.d.right { top: calc(50% - var(--arrow) / 2); right: 0.35rem; }
+.d:active, .d.is-down { background: rgba(31, 125, 255, 0.28); color: var(--neon-core); }
+
+.d-hub {
+  position: absolute;
+  left: calc(50% - var(--hub) / 2);
+  top: calc(50% - var(--hub) / 2);
+  width: var(--hub);
+  height: var(--hub);
+  padding: 0;
+  border-radius: 50%;
+  border: 0.32rem solid var(--neon-core);
+  background: radial-gradient(circle, #0c1a4e 0%, #0a1440 70%);
+  box-shadow: 0 0 0 1px #1a7dff, 0 0 0.9rem 0.2rem rgba(31, 125, 255, 0.85), 0 0 2rem 0.4rem rgba(10, 69, 214, 0.5), inset 0 0 0.9rem rgba(31, 125, 255, 0.6);
+  touch-action: none;
+}
+.d-hub:active, .d-hub.is-down { background: radial-gradient(circle, #1a4bd0 0%, #0c2a8c 80%); }
+
+.ab {
+  position: relative;
+  width: min(20rem, 84vw);
+  display: grid;
+  grid-template-columns: 1fr var(--face) 1fr;
+  grid-template-rows: var(--face) var(--face-drop);
+  padding-top: 1.6rem;
+  border-top: 2px solid rgba(228, 232, 250, 0.85);
+}
+.face {
+  width: var(--face);
+  height: var(--face);
+  min-width: 44px;
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 50%;
+  font: inherit;
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: var(--text);
+  touch-action: none;
+}
+.face.a {
+  grid-column: 2;
+  grid-row: 1;
+  background: radial-gradient(circle at 50% 40%, #0d2fb0 0%, var(--a-fill) 70%);
+  border: 0.22rem solid #1b74ff;
+  box-shadow: 0 0 0.8rem 0.15rem rgba(31, 125, 255, 0.8), 0 0 2rem 0.3rem rgba(10, 69, 214, 0.45), inset 0 0 0.8rem rgba(80, 160, 255, 0.45);
+}
+.face.b, .face.home {
+  grid-row: 1 / span 2;
+  align-self: end;
+  background: var(--face-fill);
+  border: 1.5px solid var(--face-edge);
+  box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.35);
+}
+.face.b { grid-column: 1; justify-self: start; }
+.face.home { grid-column: 3; justify-self: end; }
+.face.home svg { width: 2.2rem; height: 2.2rem; }
+.face:active, .face.is-down { filter: brightness(1.35); }
+.face.b:active, .face.b.is-down, .face.home:active, .face.home.is-down { border-color: var(--neon-core); }
+
+#home-wrap { display: none; }
+
+.hint { margin: 0; color: var(--muted); font-size: 0.9rem; text-align: center; }
+
+@media (max-height: 700px) {
+  :root { --ring: min(14.5rem, 62vw); --face: 4.75rem; --face-drop: 3rem; }
+  .pad { gap: 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+/* the room label only means something once joined */
+body:has(#join-form:not([hidden])) .room { visibility: hidden; }
+
+/* PIN pad, shown when the TV is locked */
+.numpad {
+  width: min(22rem, 100%);
+  margin: 1.2rem auto 0;
+}
+.numpad-label {
+  margin: 0 0 0.8rem;
+  text-align: center;
+  color: var(--muted, #aab6d9);
+  font-size: 1rem;
+  font-weight: 600;
+}
+.num-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.7rem;
+}
+.num-grid button {
+  height: max(76px, 4.6rem);
+  border-radius: 1rem;
+  border: 1px solid rgba(170, 186, 255, 0.22);
+  background: rgba(20, 28, 70, 0.9);
+  color: #fff;
+  font: inherit;
+  font-size: 1.7rem;
+  font-weight: 700;
+  touch-action: manipulation;
+}
+.num-grid button.is-down { background: rgba(40, 90, 200, 0.95); }
+body.is-locked #pad { display: none; }
+body.is-locked #numpad { display: block; }
+body.is-locked #hint { visibility: hidden; }

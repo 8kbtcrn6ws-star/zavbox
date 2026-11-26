@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050a1d">
+  <meta name="description" content="Zavbox is Zav's game library for the TV. Phones act as controllers.">
+  <title>Zavbox</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "peerjs": "https://cdn.jsdelivr.net/npm/peerjs@1.5.5/+esm",
+      "qrcode-generator": "https://cdn.jsdelivr.net/npm/qrcode-generator@2.0.4/dist/qrcode.mjs"
+    }
+  }
+  </script>
+  <script src="app.js" type="module"></script>
+</head>
+<body class="tv">
+  <a class="skip" href="#shelf">Skip to games</a>
+
+  <svg class="backdrop" aria-hidden="true" focusable="false" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="swoosh-a" x1="0" y1="1" x2="1" y2="0">
+        <stop offset="0" stop-color="var(--swoosh-1)" stop-opacity="0"/>
+        <stop offset="0.5" stop-color="var(--swoosh-2)" stop-opacity="0.38"/>
+        <stop offset="1" stop-color="var(--swoosh-3)" stop-opacity="0.62"/>
+      </linearGradient>
+      <filter id="soft" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="5"/></filter>
+    </defs>
+    <path filter="url(#soft)" fill="url(#swoosh-a)" d="M1120 900 C 1300 620, 1560 380, 1905 255 L 1912 300 C 1660 420, 1430 640, 1270 905 Z"/>
+    <path filter="url(#soft)" fill="url(#swoosh-a)" opacity="0.45" d="M1430 905 C 1560 700, 1730 560, 1920 470 L 1920 520 C 1760 610, 1630 740, 1540 905 Z"/>
+  </svg>
+
+  <header class="top">
+    <a class="wordmark" href="./" aria-current="page"><svg class="mark" viewBox="0 0 84 64" aria-hidden="true" focusable="false"><defs><linearGradient id="mark-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7fe0ff"/><stop offset="0.55" stop-color="#2f8bff"/><stop offset="1" stop-color="#1450f0"/></linearGradient></defs><path d="M17 4h61a3 3 0 0 1 2.6 4.5l-4 7A6 6 0 0 1 71.4 18.5H41L19 46h45a3 3 0 0 1 2.6 4.5l-4.4 7.6A6 6 0 0 1 57 61H5a3 3 0 0 1-2.4-4.8L36 18.5H9.8a3 3 0 0 1-2.6-4.5l4.6-7A6 6 0 0 1 17 4z" fill="url(#mark-g)"/><path d="M44.5 25.5L60 25.5L50.5 38H35z" fill="#bff1ff" opacity="0.9"/></svg>Zavbox</a>
+    <nav class="pills" aria-label="Library">
+      <button type="button" class="pill is-on" data-focus="nav-games" data-screen="games"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.5 6.5h9a5 5 0 0 1 4.9 4l.9 4.6a2.6 2.6 0 0 1-4.6 2.1L16 15.2H8l-1.7 2a2.6 2.6 0 0 1-4.6-2.1l.9-4.6a5 5 0 0 1 4.9-4z" fill="currentColor"/><path d="M7.5 9.2v3.6M5.7 11h3.6" stroke="var(--pill-cut, #0a1440)" stroke-width="1.7" stroke-linecap="round"/><circle cx="15.4" cy="10" r="1.05" fill="var(--pill-cut, #0a1440)"/><circle cx="17.6" cy="12.1" r="1.05" fill="var(--pill-cut, #0a1440)"/></svg>Games</button>
+      <button type="button" class="pill" data-focus="nav-library" data-screen="library"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 7.2A2.2 2.2 0 0 1 5.2 5h4.1l2 2.2h7.5A2.2 2.2 0 0 1 21 9.4v8.4a2.2 2.2 0 0 1-2.2 2.2H5.2A2.2 2.2 0 0 1 3 17.8z" fill="currentColor"/><path d="M3 10h18" stroke="var(--pill-cut, #0a1440)" stroke-width="1.4" opacity="0.6"/></svg>My Games</button>
+      <button type="button" class="pill" data-focus="nav-settings" data-screen="settings"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M10.3 2.5h3.4l.5 2.6a7.6 7.6 0 0 1 1.9 1.1l2.5-.9 1.7 2.9-2 1.8a7.7 7.7 0 0 1 0 2.2l2 1.8-1.7 2.9-2.5-.9a7.6 7.6 0 0 1-1.9 1.1l-.5 2.6h-3.4l-.5-2.6a7.6 7.6 0 0 1-1.9-1.1l-2.5.9-1.7-2.9 2-1.8a7.7 7.7 0 0 1 0-2.2l-2-1.8 1.7-2.9 2.5.9a7.6 7.6 0 0 1 1.9-1.1zM12 8.6a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8z"/></svg>Settings</button>
+      <button type="button" class="pill" data-focus="nav-about" data-screen="about"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v5.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="7.6" r="1.35" fill="currentColor"/></svg>About</button>
+    </nav>
+    <div class="link-chip" aria-hidden="true">
+      <span class="chip-ico"><svg class="ico" viewBox="0 0 24 24" focusable="false"><rect x="7" y="2.5" width="10" height="19" rx="2.4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10.5 18.2h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+      <span class="chip-label">Phone link</span>
+      <span class="chip-dot"></span>
+    </div>
+  </header>
+
+  <main>
+    <section id="screen-games" class="screen is-on" aria-labelledby="heading-games">
+      <h1 id="heading-games">Your Games</h1>
+      <p class="sub">Use left and right to browse <span aria-hidden="true">•</span> Press A to play</p>
+      <div class="carousel" id="shelf"></div>
+    </section>
+
+    <section id="screen-library" class="screen" hidden aria-labelledby="heading-library">
+      <h1 id="heading-library">My Games</h1>
+      <p class="sub">Shared games and games saved on this TV <span aria-hidden="true">•</span> Press A to play</p>
+      <div class="carousel" id="library-shelf"></div>
+    </section>
+
+    <section id="screen-settings" class="screen" hidden aria-labelledby="heading-settings">
+      <h1 id="heading-settings">Settings</h1>
+      <p class="sub">Left and right change a setting <span aria-hidden="true">•</span> A confirms</p>
+      <div class="panel settings-panel" id="settings-panel">
+        <h2 class="set-heading">Look</h2>
+        <button type="button" class="set-row" data-focus="set-theme" data-set="theme">
+          <span class="set-label">Theme</span>
+          <span class="set-value" id="val-theme">Neon Blue</span>
+        </button>
+        <button type="button" class="set-row" data-focus="set-graphics" data-set="graphics">
+          <span class="set-label">Graphics</span>
+          <span class="set-value" id="val-graphics">High</span>
+        </button>
+        <h2 class="set-heading">Feel</h2>
+        <button type="button" class="set-row" data-focus="set-haptics" data-set="haptics">
+          <span class="set-label">Haptics</span>
+          <span class="set-value" id="val-haptics">On</span>
+        </button>
+        <button type="button" class="set-row" data-focus="set-sounds" data-set="uiSounds">
+          <span class="set-label">UI sounds</span>
+          <span class="set-value" id="val-sounds">On</span>
+        </button>
+        <button type="button" class="set-row" data-focus="set-volume" data-set="uiVolume">
+          <span class="set-label">Sound volume</span>
+          <span class="set-value" id="val-volume">60%</span>
+        </button>
+        <button type="button" class="set-row" data-focus="set-motion" data-set="reducedMotion">
+          <span class="set-label">Reduced motion</span>
+          <span class="set-value" id="val-motion">Off</span>
+        </button>
+        <h2 class="set-heading">TV</h2>
+        <button type="button" class="set-row" data-focus="set-overscan" data-set="overscan">
+          <span class="set-label">Safe area</span>
+          <span class="set-value" id="val-overscan">0%</span>
+        </button>
+        <button type="button" class="set-row" data-focus="set-fps" data-set="showFps">
+          <span class="set-label">Show FPS</span>
+          <span class="set-value" id="val-fps">Off</span>
+        </button>
+        <button type="button" class="set-row" data-focus="set-fullscreen" id="btn-fullscreen">
+          <span class="set-label">Full screen</span>
+          <span class="set-value" id="val-fullscreen">Enter</span>
+        </button>
+        <h2 class="set-heading">Lock</h2>
+        <button type="button" class="set-row" data-focus="set-pin" data-set="pin">
+          <span class="set-label">PIN lock</span>
+          <span class="set-value" id="val-pin">On</span>
+        </button>
+        <button type="button" class="set-row" data-focus="set-pin-change" id="btn-pin-change" hidden>
+          <span class="set-label">Change PIN</span>
+          <span class="set-value">Enter a new 4-digit PIN</span>
+        </button>
+        <button type="button" class="set-row danger" data-focus="set-reset">
+          <span class="set-label">Reset settings</span>
+          <span class="set-value">Restore defaults</span>
+        </button>
+        <p class="lead">On a MacBook, put this page on the TV and use full screen. Scan the room code with a phone to move around this menu. Graphics apply the next time a game is opened.</p>
+        <p id="settings-link" class="mono"></p>
+      </div>
+    </section>
+
+    <section id="screen-about" class="screen" hidden aria-labelledby="heading-about">
+      <h1 id="heading-about">About</h1>
+      <div class="panel prose">
+        <p>Zavbox is Zav's game library for the TV. A phone acts as the controller for this menu: D-pad to move, A to choose, B to go back, Home to return here.</p>
+        <p>Party Mode is the game on the shelf. Press Play and it opens on this TV. Then, on that screen, choose Party Mode and scan the QR code it shows with your phone to drive. This Zavbox controller steps aside once the game starts.</p>
+        <p>A future game can only join this library if it can be launched from the TV and then played with a phone in the same living-room way.</p>
+      </div>
+    </section>
+  </main>
+
+  <aside class="dock" aria-label="Phone join">
+    <div class="qr-frame" id="qr" aria-hidden="true"></div>
+    <div class="dock-copy">
+      <p class="kicker">Scan to control this TV</p>
+      <p class="room-code" id="room-code">----</p>
+      <p class="status" id="host-status">Starting the phone link.</p>
+    </div>
+  </aside>
+
+  <dialog id="add-dialog" aria-labelledby="add-title">
+    <form id="add-form" method="dialog">
+      <h2 id="add-title">Add a game on this device</h2>
+      <p>This stays in this browser only. A game you add must be playable from a TV, with a phone as the controller, the same way Party Mode is.</p>
+      <p>
+        <label for="add-title-input">Title</label>
+        <input id="add-title-input" name="title" type="text" required maxlength="80" autocomplete="off" data-focus="add-title">
+      </p>
+      <p>
+        <label for="add-url">Play URL</label>
+        <input id="add-url" name="url" type="url" required placeholder="https://" autocomplete="off" data-focus="add-url">
+      </p>
+      <p>
+        <label for="add-desc">Short description</label>
+        <textarea id="add-desc" name="description" required maxlength="280" rows="3" data-focus="add-desc"></textarea>
+      </p>
+      <p>
+        <label for="add-cover">Cover image URL (optional)</label>
+        <input id="add-cover" name="cover" type="url" placeholder="https://" autocomplete="off" data-focus="add-cover">
+      </p>
+      <div class="actions">
+        <button type="submit" class="play" data-focus="add-submit">Add to this device</button>
+        <button type="button" class="ghost" id="add-cancel" data-focus="add-cancel">Cancel</button>
+      </div>
+      <p id="add-feedback" class="feedback" role="status" aria-live="polite"></p>
+    </form>
+  </dialog>
+
+  <div id="fps-meter" class="fps-meter" hidden aria-hidden="true">0</div>
+
+  <div id="lock-screen" class="lock" hidden>
+    <div class="lock-card" id="lock-card">
+      <p class="lock-brand">Zavbox</p>
+      <h1 id="lock-title">Enter PIN</h1>
+      <p class="lock-sub" id="lock-sub">Use the phone pad, the number keys, or the buttons below.</p>
+      <div class="pin-dots" id="pin-dots" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <div class="pin-pad" id="pin-pad" role="group" aria-label="PIN pad">
+        <button type="button" data-focus="pin-1" data-digit="1">1</button>
+        <button type="button" data-focus="pin-2" data-digit="2">2</button>
+        <button type="button" data-focus="pin-3" data-digit="3">3</button>
+        <button type="button" data-focus="pin-4" data-digit="4">4</button>
+        <button type="button" data-focus="pin-5" data-digit="5">5</button>
+        <button type="button" data-focus="pin-6" data-digit="6">6</button>
+        <button type="button" data-focus="pin-7" data-digit="7">7</button>
+        <button type="button" data-focus="pin-8" data-digit="8">8</button>
+        <button type="button" data-focus="pin-9" data-digit="9">9</button>
+        <button type="button" data-focus="pin-back" data-pin="back" aria-label="Delete">DEL</button>
+        <button type="button" data-focus="pin-0" data-digit="0">0</button>
+        <button type="button" data-focus="pin-ok" data-pin="ok" aria-label="Confirm">OK</button>
+      </div>
+      <p class="lock-feedback" id="lock-feedback" role="status" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <dialog id="pin-prompt" aria-labelledby="prompt-title">
+    <h2 id="prompt-title">Protect this TV?</h2>
+    <p>You can set a 4-digit PIN so only people at home can open Zavbox. You can also do this later in Settings.</p>
+    <div class="actions">
+      <button type="button" class="play" data-focus="prompt-set">Set a PIN</button>
+      <button type="button" class="ghost" data-focus="prompt-skip">Not now</button>
+    </div>
+  </dialog>
+
+  <div id="launch" class="launch" hidden role="status">
+    <div class="launch-card">
+      <h2>Opening Party Mode</h2>
+      <p>This TV is leaving Zavbox and opening the game. On the next screen, choose Party Mode, then scan the QR code it shows with your phone to drive.</p>
+    </div>
+  </div>
+</body>
+</html>

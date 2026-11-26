@@ -1,0 +1,26 @@
+{
+  "library": "Zavbox",
+  "controller": {
+    "style": "dpad-ab",
+    "description": "The Zavbox TV menu is driven with a phone D-pad plus A, B and Home. After Play, the game must offer its own phone join, the way Party Mode does with its QR code."
+  },
+  "games": [
+    {
+      "id": "party-mode",
+      "title": "Party Mode",
+      "description": "Open-world off-road driving. Play solo on the 512 m map, or start a party on the 2 km world. Phones steer and a TV is the shared screen.",
+      "play": "https://8kbtcrn6ws-star.github.io/party-mode/",
+      "origin": "live",
+      "controller": "dpad-ab",
+      "cover": "art/party-mode-cover.webp",
+      "coverWidth": 864,
+      "coverHeight": 1152,
+      "coverAlt": "Cinematic key art of a stylised orange off-road car on a night road, with neon light and mountains ahead.",
+      "art": "art/party-mode.webp",
+      "artWidth": 1280,
+      "artHeight": 800,
+      "artAlt": "An orange 4x4 parked on a gravel track in Party Mode, with hills and trees ahead.",
+      "notes": "Opens on this TV. On that screen, choose Party Mode, then scan the QR code it shows with your phone to drive. Zavbox steps aside once the game starts."
+    }
+  ]
+}
