@@ -6,6 +6,20 @@
   },
   "games": [
     {
+      "id": "afterglow-rally",
+      "title": "Afterglow Rally",
+      "description": "A free browser rally game made by someone else (@afterglowrally). Steer with your phone. Opens on their site, not inside Zavbox.",
+      "play": "https://afterglow-rally.vercel.app/",
+      "origin": "external",
+      "credit": "Afterglow Rally \u2014 by @afterglowrally",
+      "notice": "Afterglow Rally is made by someone else (@afterglowrally), not Zav. You're leaving Zavbox to play it on their website. Free, play in your browser, steer with your phone.",
+      "cover": "art/afterglow-rally-cover.webp",
+      "coverWidth": 864,
+      "coverHeight": 1152,
+      "coverAlt": "Original key art of a stylised copper rally car on a mountain road at sunset, under a gold and rose sky.",
+      "notes": "This is not a Zavbox game. After the short notice, this TV leaves Zavbox and opens afterglow-rally.vercel.app. Afterglow Rally uses your phone as a steering wheel on that site."
+    },
+    {
       "id": "party-mode",
       "title": "Party Mode",
       "description": "Open-world off-road driving. Play solo on the 512 m map, or start a party on the 2 km world. Phones steer and a TV is the shared screen.",
