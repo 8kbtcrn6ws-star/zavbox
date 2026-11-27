@@ -24,6 +24,7 @@ const fullscreenBtn = document.getElementById("btn-fullscreen");
 /** @type {{games: object[], controller?: object}} */
 let catalog = { games: [] };
 let screen = "games";
+let leaveNoticeGame = null;
 let focusId = "game-party-mode";
 let joinUrl = "";
 const host = new TvHost();
@@ -343,14 +344,20 @@ function renderShelf(into, includeUtility) {
     const art = src
       ? `<img class="art" src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" width="${width}" height="${height}" ${index === 0 ? 'fetchpriority="high"' : 'loading="lazy"'}>`
       : `<div class="art art-fallback" style="${fallbackCoverStyle(game.id)}" role="img" aria-label="${escapeHtml(alt || ((game.title || "Game") + " cover"))}"></div>`;
+    const badge = game.origin === "external"
+      ? `<p class="origin-badge">Someone else's game</p>`
+      : "";
+    const credit = game.credit ? `<p class="credit">${escapeHtml(game.credit)}</p>` : "";
     return `<article class="game-card" data-focus="${escapeHtml(focus)}" data-game="${escapeHtml(game.id)}">
       <div class="cover">
         ${art}
         <p class="cover-title" aria-hidden="true">${coverTitleMarkup(game.title)}</p>
+        ${badge}
       </div>
       <div class="meta">
         <h2>${escapeHtml(game.title)}</h2>
         <p class="desc">${escapeHtml(game.description || "")}</p>
+        ${credit}
         <button type="button" class="play" data-play="${escapeHtml(game.id)}"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.2v13.6a1 1 0 0 0 1.5.86l11-6.8a1 1 0 0 0 0-1.72l-11-6.8A1 1 0 0 0 8 5.2z" fill="currentColor"/></svg>Play</button>
       </div>
     </article>`;
@@ -402,6 +409,9 @@ function currentRows() {
   }
   if (pinPrompt.open) {
     return [nav, ["prompt-set", "prompt-skip"]];
+  }
+  if (!launchEl.hidden && launchEl.dataset.mode === "leave") {
+    return [["leave-continue", "leave-back"]];
   }
   if (addDialog.open) {
     return [nav, ["add-title", "add-url", "add-desc", "add-cover", "add-submit", "add-cancel"]];
@@ -554,9 +564,21 @@ function activate() {
     closeAdd();
     return;
   }
+  if (focusId === "leave-continue") {
+    confirmLeaveNotice();
+    return;
+  }
+  if (focusId === "leave-back") {
+    closeLeaveNotice();
+    return;
+  }
 }
 
 function goBack() {
+  if (isLeaveNoticeOpen()) {
+    closeLeaveNotice();
+    return;
+  }
   if (addDialog.open) {
     closeAdd();
     return;
@@ -568,6 +590,7 @@ function goBack() {
 }
 
 function goHome() {
+  if (isLeaveNoticeOpen()) closeLeaveNotice();
   if (addDialog.open) closeAdd();
   focusId = "game-party-mode";
   showScreen("games");
@@ -582,12 +605,105 @@ function gameById(id) {
   return allGames().find((g) => g.id === id);
 }
 
+function launchHeading() {
+  return launchEl.querySelector("#launch-heading") || launchEl.querySelector("h2");
+}
+
+function launchBody() {
+  return launchEl.querySelector("#launch-body") || launchEl.querySelector(".launch-body");
+}
+
+function isLeaveNoticeOpen() {
+  return Boolean(launchEl) && !launchEl.hidden && launchEl.dataset.mode === "leave";
+}
+
+function resetLaunchChrome() {
+  const badge = launchEl.querySelector(".launch-badge");
+  const actions = launchEl.querySelector(".launch-actions");
+  const credit = launchEl.querySelector(".launch-credit");
+  if (badge) badge.hidden = true;
+  if (actions) actions.hidden = true;
+  if (credit) {
+    credit.hidden = true;
+    credit.textContent = "";
+  }
+  launchEl.setAttribute("role", "status");
+  launchEl.removeAttribute("aria-modal");
+  launchEl.removeAttribute("aria-labelledby");
+  launchEl.removeAttribute("aria-describedby");
+}
+
+function showLeaveNotice(game) {
+  leaveNoticeGame = game;
+  resetLaunchChrome();
+  launchEl.hidden = false;
+  launchEl.dataset.mode = "leave";
+  launchEl.setAttribute("role", "alertdialog");
+  launchEl.setAttribute("aria-modal", "true");
+  launchEl.setAttribute("aria-labelledby", "launch-heading");
+  launchEl.setAttribute("aria-describedby", "launch-body");
+  const badge = launchEl.querySelector(".launch-badge");
+  const actions = launchEl.querySelector(".launch-actions");
+  const credit = launchEl.querySelector(".launch-credit");
+  const heading = launchHeading();
+  const body = launchBody();
+  if (badge) badge.hidden = false;
+  if (actions) actions.hidden = false;
+  if (heading) heading.textContent = game.title || "Someone else's game";
+  if (body) {
+    body.textContent = game.notice || (String(game.title || "This game") + " is made by its own developers, not by Zavbox. You're leaving Zavbox to play it.");
+  }
+  if (credit) {
+    credit.hidden = !game.credit;
+    credit.textContent = game.credit || "";
+  }
+  focusId = "leave-continue";
+  paintFocus();
+}
+
+function closeLeaveNotice() {
+  if (!isLeaveNoticeOpen()) return;
+  const game = leaveNoticeGame;
+  leaveNoticeGame = null;
+  launchEl.hidden = true;
+  launchEl.dataset.mode = "";
+  resetLaunchChrome();
+  focusId = game ? "game-" + game.id : "game-party-mode";
+  paintFocus();
+}
+
+function confirmLeaveNotice() {
+  const game = leaveNoticeGame;
+  if (!game || !game.play) return;
+  const url = game.play;
+  let hostName = "its own site";
+  try { hostName = new URL(url, window.location.href).hostname; } catch { /* keep fallback */ }
+  host.broadcast({
+    t: "launch",
+    game: game.id,
+    url,
+    message: (game.title || "The game") + " is opening on the TV at " + hostName + ". It is not a Zavbox game."
+  });
+  launchEl.dataset.mode = "leaving";
+  const actions = launchEl.querySelector(".launch-actions");
+  if (actions) actions.hidden = true;
+  const heading = launchHeading();
+  const body = launchBody();
+  if (heading) heading.textContent = "Opening " + (game.title || "the game");
+  if (body) body.textContent = "This TV is leaving Zavbox and opening " + (game.title || "the game") + " on " + hostName + ".";
+  window.setTimeout(() => { window.location.href = url; }, 700);
+}
+
 function launchGame(id) {
   const game = gameById(id);
   if (!game || !game.play) return;
+  if (game.origin === "external" || game.notice) {
+    showLeaveNotice(game);
+    return;
+  }
   const isParty = id === "party-mode" || game.play.startsWith("https://8kbtcrn6ws-star.github.io/party-mode/");
   const isAirTennis = id === "air-tennis" || game.play.startsWith("https://8kbtcrn6ws-star.github.io/air-tennis/");
-  const url = isParty || isAirTennis ? withGraphicsParams(game.play) : game.play;
+  const url = withZavboxFlag(isParty || isAirTennis ? withGraphicsParams(game.play) : game.play);
   host.broadcast({
     t: "launch",
     game: id,
@@ -596,17 +712,31 @@ function launchGame(id) {
       ? "Party Mode is opening on the TV. On that screen, choose Party Mode, then scan the QR code it shows with this phone to drive."
       : "The game is opening on the TV. If it shows its own QR code, scan that with this phone to play."
   });
+  resetLaunchChrome();
+  launchEl.dataset.mode = "opening";
   launchEl.hidden = false;
-  const heading = launchEl.querySelector("h2");
-  const body = launchEl.querySelector("p");
+  const heading = launchHeading();
+  const body = launchBody();
   if (isParty) {
-    heading.textContent = "Opening Party Mode";
-    body.textContent = "This TV is leaving Zavbox and opening the game. On the next screen, choose Party Mode, then scan the QR code it shows with your phone to drive.";
+    if (heading) heading.textContent = "Opening Party Mode";
+    if (body) body.textContent = "This TV is leaving Zavbox and opening the game. On the next screen, choose Party Mode, then scan the QR code it shows with your phone to drive.";
   } else {
-    heading.textContent = "Opening " + game.title;
-    body.textContent = "This TV is leaving Zavbox and opening the game. If that screen shows a QR code, scan it with your phone to play.";
+    if (heading) heading.textContent = "Opening " + game.title;
+    if (body) body.textContent = "This TV is leaving Zavbox and opening the game. If that screen shows a QR code, scan it with your phone to play.";
   }
   window.setTimeout(() => { window.location.href = url; }, 700);
+}
+
+// Zav's own games only start when opened from Zavbox; they look for ?from=zavbox.
+const OWN_GAMES_ORIGIN = "https://8kbtcrn6ws-star.github.io";
+function withZavboxFlag(url) {
+  try {
+    const u = new URL(url, window.location.href);
+    if (u.origin === OWN_GAMES_ORIGIN && !u.pathname.startsWith("/zavbox/")) u.searchParams.set("from", "zavbox");
+    return u.href;
+  } catch {
+    return url;
+  }
 }
 
 function openAdd() {
@@ -673,6 +803,16 @@ addForm.addEventListener("submit", (event) => {
 });
 
 document.getElementById("add-cancel").addEventListener("click", closeAdd);
+document.getElementById("leave-continue").addEventListener("click", (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  confirmLeaveNotice();
+});
+document.getElementById("leave-back").addEventListener("click", (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  closeLeaveNotice();
+});
 addDialog.addEventListener("close", () => {
   if (focusId.startsWith("add-")) {
     focusId = "tile-add";
@@ -702,6 +842,7 @@ document.body.addEventListener("click", (event) => {
 });
 
 function handleNavKey(key) {
+  if (!launchEl.hidden && launchEl.dataset.mode === "leaving") return;
   if (!lockEl.hidden) {
     handlePinNav(key);
     return;

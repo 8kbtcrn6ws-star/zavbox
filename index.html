@@ -207,8 +207,14 @@
 
   <div id="launch" class="launch" hidden role="status">
     <div class="launch-card">
-      <h2>Opening Party Mode</h2>
-      <p>This TV is leaving Zavbox and opening the game. On the next screen, choose Party Mode, then scan the QR code it shows with your phone to drive.</p>
+      <p class="launch-badge" hidden>Someone else's game</p>
+      <h2 id="launch-heading">Opening Party Mode</h2>
+      <p class="launch-body" id="launch-body">This TV is leaving Zavbox and opening the game. On the next screen, choose Party Mode, then scan the QR code it shows with your phone to drive.</p>
+      <p class="launch-credit" hidden></p>
+      <div class="launch-actions" hidden>
+        <button type="button" class="launch-btn" data-focus="leave-continue" id="leave-continue">Continue</button>
+        <button type="button" class="launch-btn launch-btn-back" data-focus="leave-back" id="leave-back">Back</button>
+      </div>
     </div>
   </div>
 </body>
