@@ -25,10 +25,10 @@
     {
       "id": "air-tennis",
       "title": "Air Tennis",
-      "description": "Stadium tennis you play with your body. Stand your phone up and its camera tracks you (one or two players), or swing the phone like a racket. 1P vs CPU, 2P Match, 2P Rally, Doubles, Training and more.",
+      "description": "Stadium tennis you play with your body. Prop your phone up 2-3 m away and its camera tracks one or two players: your arm is the racket. 1P vs CPU, 2P Match, 2P Rally, Doubles, Training and more.",
       "play": "https://8kbtcrn6ws-star.github.io/air-tennis/",
       "origin": "live",
-      "controller": "phone-motion",
+      "controller": "phone-camera",
       "cover": "art/air-tennis-cover.webp",
       "coverWidth": 864,
       "coverHeight": 1152,
@@ -37,7 +37,7 @@
       "artWidth": 1280,
       "artHeight": 720,
       "artAlt": "Air Tennis in play: a player on a deep-blue court with glowing cyan lines, hitting a neon ball.",
-      "notes": "Opens on this TV. Scan the QR code Air Tennis shows with your phone, pick Body camera (1 or 2 players) or Swing your phone, and follow the quick setup."
+      "notes": "Opens on this TV. Scan the QR code Air Tennis shows with your phone, tap Start camera, prop the phone up with your whole body in view, and follow the quick setup."
     }
   ]
 }
